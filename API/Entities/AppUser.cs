@@ -5,9 +5,9 @@ namespace API.Entities;
 public class AppUser
 {
     public int Id { get; set; }
-    public string Username { get; set; }
-    // public byte[] PasswordHash { get; set; }
-    // public byte[] PasswordSalt { get; set; }
+    public required string UserName { get; set; }
+    public required byte[] PasswordHash { get; set; }
+    public required byte[] PasswordSalt { get; set; }
     // public string Gender { get; set; }
     // public DateTime DateOfBirth { get; set; }
     // public string KnownAs { get; set; }
