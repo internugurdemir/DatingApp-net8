@@ -1,6 +1,7 @@
 import { Component, inject, input, output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AccountService } from '../_services/account.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-register',
@@ -11,7 +12,7 @@ import { AccountService } from '../_services/account.service';
 })
 export class RegisterComponent {
   private accountService = inject(AccountService);
-  // private toastr = inject(ToastrService);
+  private toastr = inject(ToastrService);
   // constructor(private accountService: AccountService, private toastr: ToastrService, 
   //   private fb: FormBuilder, private router: Router) { }
   
@@ -32,8 +33,8 @@ export class RegisterComponent {
           console.log(response);
           this.cancel();
         },
-        error: error=> console.error(error.error)
-        // error: error=> this.toastr.error(error.error)
+        // error: error=> console.error(error.error)
+        error: error=> this.toastr.error(error.error)
       })
     }
     cancel(){
