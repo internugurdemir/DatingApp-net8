@@ -7,7 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 namespace API.Controllers
 {
     [Route("api/[controller]")]
-    [ApiController]    public class BuggyController(DataContext context) : BaseApiController
+    [ApiController]
+    public class BuggyController(DataContext context) : BaseApiController
     {
         // private readonly DataContext _context;
         // public BuggyController(DataContext context)
@@ -33,18 +34,21 @@ namespace API.Controllers
         }
 
         [HttpGet("server-error")]
-        public ActionResult<string> GetServerError()
+        public ActionResult<AppUser> GetServerError()
         {
-            var thing = context.Users.Find(-1) ?? throw new Exception("A bad thing happen");
-            var thingToReturn = thing.ToString();
 
-            return thingToReturn;
+                var thing = context.Users.Find(-1) ?? throw new Exception("A bad thing happen");
+                var thingToReturn = thing.ToString();
+
+                return thing;
+      
+
         }
 
         [HttpGet("bad-request")]
         public ActionResult<string> GetBadRequest()
         {
-            return BadRequest();
+            return BadRequest("this was a fail");
         }
     }
 }
