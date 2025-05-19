@@ -19,6 +19,13 @@ public static class ApplicationServiceExtensions
         });
         services.AddCors();
         services.AddScoped<ITokenService, TokenService>();
+        services.AddScoped<IUserRepository, UserRepository>();
+        services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+// Lifetime         Behavior
+// AddSingleton     A single instance is created and shared for the entire app lifetime.
+// AddScoped	    A new instance per HTTP request.
+// AddTransient	    A new instance each time the service is requested.
+
         return services;
     }
 }

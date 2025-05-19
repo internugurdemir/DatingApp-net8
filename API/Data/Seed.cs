@@ -1,41 +1,66 @@
-using System.Collections.Generic;
-using System.Linq;
-using API.Entities;
 using API.Data;
-using DatingApp.API;
-using Newtonsoft.Json;
+using System.Text;
+using System.Text.Json;
+using API.Entities;
+using Microsoft.EntityFrameworkCore;
+using System.Security.Cryptography;
 
 namespace DatingApp.API.Data
 {
     public class Seed
     {
-        public static void SeedUsers(DataContext context)
+        public static async Task SeedUsers(DataContext context)
         {
-            if (!context.Users.Any())
+            // if (await userManager.Users.AnyAsync()) return;
+            if (await context.Users.AnyAsync()) return;
+
+            var userData = await File.ReadAllTextAsync("Data/UserSeedData.json");
+
+            var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+
+            var users = JsonSerializer.Deserialize<List<AppUser>>(userData, options);
+
+            if (users == null) return;
+
+            // var roles = new List<Appuser>
+            //     {
+            //         new() {Name = "Member"},
+            //         new() {Name = "Admin"},
+            //         new() {Name = "Moderator"},
+            //     };
+
+            // foreach (var role in roles)
+            // {
+            //     await roleManager.CreateAsync(role);
+            // }
+
+            foreach (var user in users)
             {
-                var userData = System.IO.File.ReadAllText("Data/UserSeedData.json");
-                // var users = JsonConvert.DeserializeObject<List<User>>(userData);
-                // foreach (var user in users)
-                // {
-                //     byte[] passwordHash, passwordSalt;
-                //     CreatePasswordHash("password", out passwordHash, out passwordSalt);
+                using var hmac= new HMACSHA512();
 
-                //     user.PasswordHash = passwordHash;
-                //     user.PasswordSalt = passwordSalt;
-                //     user.Username = user.Username.ToLower();
-                //     context.Users.Add(user);
-                // }
+                // user.Photos.First().IsApproved = true;
+                user.UserName = user.UserName!.ToLower();
+                user.PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes("Pa$$w0rd"));
+                user.PasswordSalt = hmac.Key;
 
-                context.SaveChanges();
+                context.Users.Add(user);
+
+                // await userManager.CreateAsync(user, "Pa$$w0rd");
+                // await userManager.AddToRoleAsync(user, "Member");
             }
-        }
+            await context.SaveChangesAsync();
 
-        private static void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
-        {
-            using (var hmac = new System.Security.Cryptography.HMACSHA512()) {
-                passwordSalt = hmac.Key;
-                passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
-            }
+            // var admin = new AppUser
+            // {
+            //     UserName = "admin",
+            //     KnownAs = "Admin",
+            //     Gender = "",
+            //     City = "",
+            //     Country = ""
+            // };
+
+            // await userManager.CreateAsync(admin, "Pa$$w0rd");
+            // await userManager.AddToRolesAsync(admin, ["Admin", "Moderator"]);
         }
     }
 }
