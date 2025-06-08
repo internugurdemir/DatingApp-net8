@@ -6,7 +6,6 @@ export interface User {
     photoUrl?: string;
     roles: string[];
 }
-let data = "42";
 
 
 /*

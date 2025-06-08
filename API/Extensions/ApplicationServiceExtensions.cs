@@ -1,5 +1,6 @@
 using System;
 using API.Data;
+using API.Helpers;
 using API.Interfaces;
 using API.Services;
 using Microsoft.EntityFrameworkCore;
@@ -18,14 +19,20 @@ public static class ApplicationServiceExtensions
             // opt.UseSqlite(@"Data Source=D:\repos\UdemyAngular\DatingApp\API\DatingApp.db");
         });
         services.AddCors();
+
+        // Lifetime         Behavior
+        // AddSingleton     A single instance is created and shared for the entire app lifetime.
+        // AddScoped	    A new instance per HTTP request.
+        // AddTransient	    A new instance each time the service is requested.
+
+
         services.AddScoped<ITokenService, TokenService>();
         services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IPhotoService, PhotoService>();
+        
         services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-// Lifetime         Behavior
-// AddSingleton     A single instance is created and shared for the entire app lifetime.
-// AddScoped	    A new instance per HTTP request.
-// AddTransient	    A new instance each time the service is requested.
 
+        services.Configure<CloudinarySettings>(config.GetSection("CloudinarySettings"));
         return services;
     }
 }
