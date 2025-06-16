@@ -39,6 +39,7 @@ public class AccountController(
          {
             Username = user.UserName,
             KnownAs = user.KnownAs,
+            Gender = user.Gender,
             Token = tokenService.CreateToken(user),
             PhotoUrl = user.Photos.FirstOrDefault(p=>p.IsMain)?.Url
         };
@@ -65,6 +66,7 @@ public class AccountController(
         return new UserDto{
             Username =user.UserName,
             KnownAs = user.KnownAs,
+            Gender = user.Gender,
             Token = tokenService.CreateToken(user),
             PhotoUrl = user.Photos.FirstOrDefault(x => x.IsMain)?.Url
         };

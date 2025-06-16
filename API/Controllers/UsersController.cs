@@ -3,6 +3,7 @@ using System.Security.Claims;
 using API.DTOs;
 using API.Entities;
 using API.Extensions;
+using API.Helpers;
 using API.Interfaces;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
@@ -17,17 +18,18 @@ namespace API.Controllers;
 public class UsersController(IUserRepository userRepository,
                              IMapper mapper,
                              IPhotoService photoService) : BaseApiController
-// public class UsersController(DataContext context) : BaseApiController
 {
 
     // [AllowAnonymous]
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<MemberDto>>> GetUsers()
+    public async Task<ActionResult<IEnumerable<MemberDto>>> GetUsers([FromQuery] UserParams userParams)
     {
         // var users = await context.Users.ToListAsync();
-        var users = await userRepository.GetMembersAsync();
 
+        userParams.CurrentUsername = User.GetUsername();
+        var users = await userRepository.GetMembersAsync(userParams);
 
+        Response.AddPaginationHeader(users);
         // return users;
         return Ok(users);
     }
@@ -55,12 +57,12 @@ public class UsersController(IUserRepository userRepository,
             return BadRequest("No user found in token");
         }
         mapper.Map(memberUpdateDto, user);
-        
+
 
         if (await userRepository.SaveAllAsync()) return NoContent();
 
         return BadRequest("Failed to update user");
-    }    
+    }
 
     [HttpPost("add-photo")]
     public async Task<ActionResult<PhotoDto>> AddPhoto(IFormFile file)
@@ -114,7 +116,7 @@ public class UsersController(IUserRepository userRepository,
 
         if (user == null) return BadRequest("User not found");
 
-        var photo = user.Photos.FirstOrDefault(a=>a.Id == photoId);
+        var photo = user.Photos.FirstOrDefault(a => a.Id == photoId);
 
         if (photo == null || photo.IsMain) return BadRequest("This photo cannot be deleted");
 

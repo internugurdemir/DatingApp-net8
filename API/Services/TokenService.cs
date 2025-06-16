@@ -28,9 +28,8 @@ public class TokenService(IConfiguration config) : ITokenService
 
         var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.NameIdentifier, user.UserName),
-                // new Claim(JwtRegisteredClaimNames.NameId, user.Id.ToString()),
-                // new Claim(JwtRegisteredClaimNames.UniqueName, user.UserName),
+                new Claim(JwtRegisteredClaimNames.NameId, user.Id.ToString()),
+                new Claim(JwtRegisteredClaimNames.Name, user.UserName),
             };
 
             
