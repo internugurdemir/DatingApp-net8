@@ -12,7 +12,7 @@ import { NgxSpinnerComponent } from 'ngx-spinner';
   styleUrl: './app.component.css',
   imports: [RouterOutlet, NavComponent, HomeComponent, NgxSpinnerComponent]
 })
-export class AppComponent implements OnInit{
+export class AppComponent implements OnInit {
   private accuntService = inject(AccountService);
 
 
@@ -20,12 +20,12 @@ export class AppComponent implements OnInit{
     this.setCurrentUser();
   }
 
-setCurrentUser(){
-  const userString = localStorage.getItem('user');
-  if (!userString) return;
-  const user = JSON.parse(userString);
-  this.accuntService.currentUser.set(user);
-}
+  setCurrentUser() {
+    const userString = localStorage.getItem('user');
+    if (!userString) return;
+    const user = JSON.parse(userString);
+    this.accuntService.setCurrentUser(user);
+  }
 
 
 }

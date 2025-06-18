@@ -21,13 +21,7 @@ public class AppUser
     public required string Country { get; set; }
     public List<Photo> Photos { get; set; } =[];
     // public virtual ICollection<Photo> Photos { get; set; }
-    // public virtual ICollection<Like> Likers { get; set; }
-    // public virtual ICollection<Like> Likees { get; set; }
-    // public virtual ICollection<Message> MessagesSent { get; set; }
-    // public virtual ICollection<Message> MessagesRecieved { get; set; }
+    public List<UserLike> LikedByUsers { get; set; } = [];
+    public List<UserLike> LikedUsers { get; set; } = [];
 
-    // public int GetAge()
-    // {
-    //     return DateOfBirth.CalculateAge();
-    // }
 }
