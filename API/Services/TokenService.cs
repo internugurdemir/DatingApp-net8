@@ -26,13 +26,20 @@ public class TokenService(IConfiguration config) : ITokenService
         if (tokenKey.Length <64) throw new Exception("invalid token");
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(tokenKey));
 
+        // var claims = new List<Claim>
+        //     {
+        //         new Claim(JwtRegisteredClaimNames.NameId, user.Id.ToString()),
+        //         new Claim(JwtRegisteredClaimNames.Name, user.UserName),
+        //     };
+
         var claims = new List<Claim>
             {
-                new Claim(JwtRegisteredClaimNames.NameId, user.Id.ToString()),
-                new Claim(JwtRegisteredClaimNames.Name, user.UserName),
-            };
+                new (ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new (ClaimTypes.Name, user.UserName),
+            }; 
 
-            
+
+
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
         var tokenDescriptor = new SecurityTokenDescriptor
         {
