@@ -5,40 +5,31 @@ using System.Security.Cryptography;
 using System.Text;
 using API.Entities;
 using API.Interfaces;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 
 namespace API.Services;
 
-public class TokenService(IConfiguration config) : ITokenService
+public class TokenService(IConfiguration config, UserManager<AppUser> userManager) : ITokenService
 {
-    // private readonly SymmetricSecurityKey _key;
-    // private readonly UserManager<AppUser> _userManager;
-    // public TokenService(IConfiguration config, UserManager<AppUser> userManager)
-    // {
-    //     _userManager = userManager;
-    //     _key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["TokenKey"]));
-    // }
-
-    // public async Task<string> CreateToken(AppUser user)
-    public string CreateToken(AppUser user)
+    public async Task<string> CreateToken(AppUser user)
     {
         var tokenKey = config["TokenKey"] ?? throw new Exception("Cannot access to token");
-        if (tokenKey.Length <64) throw new Exception("invalid token");
+        if (tokenKey.Length < 64) throw new Exception("invalid token");
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(tokenKey));
 
-        // var claims = new List<Claim>
-        //     {
-        //         new Claim(JwtRegisteredClaimNames.NameId, user.Id.ToString()),
-        //         new Claim(JwtRegisteredClaimNames.Name, user.UserName),
-        //     };
+        if (user.UserName == null) throw new Exception("No username for user");
 
         var claims = new List<Claim>
             {
                 new (ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new (ClaimTypes.Name, user.UserName),
-            }; 
+            };
 
+        var roles = await userManager.GetRolesAsync(user);
+        claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role , role)));
 
+        
 
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
         var tokenDescriptor = new SecurityTokenDescriptor
@@ -53,7 +44,7 @@ public class TokenService(IConfiguration config) : ITokenService
 
         var token = tokenHandler.CreateToken(tokenDescriptor);
 
-    
+
 
         // var roles = await _userManager.GetRolesAsync(user);
 

@@ -20,7 +20,6 @@ public class UsersController(IUserRepository userRepository,
                              IPhotoService photoService) : BaseApiController
 {
 
-    // [AllowAnonymous]
     [HttpGet]
     public async Task<ActionResult<IEnumerable<MemberDto>>> GetUsers([FromQuery] UserParams userParams)
     {
@@ -33,9 +32,6 @@ public class UsersController(IUserRepository userRepository,
         // return users;
         return Ok(users);
     }
-
-    // [Authorize]
-    // [HttpGet("{id:int}")]
     [HttpGet("{username}")]
     public async Task<ActionResult<MemberDto>> GetUser(string username)
     {
