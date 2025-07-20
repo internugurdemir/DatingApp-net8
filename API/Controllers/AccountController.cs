@@ -52,7 +52,7 @@ public class AccountController(UserManager<AppUser> userManager,
 
         var result = await userManager.CheckPasswordAsync(user, loginDto.Password);
 
-        if (!result) return Unauthorized();
+        if (!result) return Unauthorized("Something went wrong");
 
 
 
