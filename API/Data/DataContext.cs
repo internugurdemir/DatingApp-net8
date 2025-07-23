@@ -19,8 +19,6 @@ public class DataContext(DbContextOptions options) : IdentityDbContext<AppUser, 
     {
         base.OnModelCreating(builder);
 
-
-
         builder.Entity<AppUser>()
             .HasMany(ur => ur.UserRoles)
             .WithOne(u => u.User)
@@ -32,8 +30,6 @@ public class DataContext(DbContextOptions options) : IdentityDbContext<AppUser, 
             .WithOne(u => u.Role)
             .HasForeignKey(ur => ur.RoleId)
             .IsRequired();
-
-
 
         builder.Entity<UserLike>()
             .HasKey(k => new { k.SourceUserId, k.LikedUserId });
